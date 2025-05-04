@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0.41
+    container_name: bancoDeDados
+    environment:
+      MYSQL_ROOT_PASSWORD: minhasenha
+    ports:
+      - "3306:3306"
+    networks:
+      - primeira-network
+    volumes:
+      - mysql_data:/var/lib/mysql  # Adiciona um volume persistente
+
+  app:
+    build:
+      context: .
+    container_name: aplicacaoFlask  
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mysql  
+    networks:
+      - primeira-network
+
+networks:
+  primeira-network:
+    external: true
+    name: primeira-network
+    driver: bridge
+
+volumes:
+  mysql_data:
+    driver: local
